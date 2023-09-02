@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Twitter Clone</title>
+</head>
+<body>
+   <% if (errorMessage) { %>
+    <div class="flash-message error">
+        <%= errorMessage %>
+    </div>
+<% } %>
+  <h1>Welcome to Twitter Clone</h1>
+  <ul>
+    <!-- Registration Form -->
+    <form action="/users/newuser" method="POST">
+      <input type="text" name="username" placeholder="Username">
+      <input type="email" name="email" placeholder="Email">
+      <input type="password" name="password" placeholder="Password">
+      <button type="submit">Register</button>
+    </form>
+
+    <!-- Login Form -->
+    <form action="/users/login" method="POST">
+      <input type="text" name="username" placeholder="Username">
+      <input type="password" name="password" placeholder="Password">
+      <button type="submit">Login</button>
+    </form>
+  </ul>
+</body>
+</html>
+
+
+
+
