@@ -5,6 +5,7 @@ const passport = require("../authentication/passport");
 // Get user profile by ID
 exports.getUserProfile = async (req, res) => {
   const userId = req.params.userId;
+  const currentUserId = req.session.userId;
 
   try {
     const user = await User.findById(userId).exec();
@@ -20,7 +21,9 @@ exports.getUserProfile = async (req, res) => {
 
     // Retrieve the user's tweets
     const tweets = await Tweet.find({ user: userId }).exec();
-
+    for (const tweet of tweets) {
+      tweet.isLikedByCurrentUser = tweet.likedBy.includes(currentUserId);
+    }
     // Render the user's profile page with the user and tweet data
     return res.render("profile", {
       user,

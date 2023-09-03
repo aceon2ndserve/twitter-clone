@@ -2,33 +2,55 @@
 <html>
 <head>
   <title>Twitter Clone</title>
+  <link rel="stylesheet" type="text/css" href="/css/index.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 </head>
 <body>
-   <% if (errorMessage) { %>
-    <div class="flash-message error">
-        <%= errorMessage %>
-    </div>
-<% } %>
-  <h1>Welcome to Twitter Clone</h1>
-  <ul>
-    <!-- Registration Form -->
-    <form action="/users/newuser" method="POST">
-      <input type="text" name="username" placeholder="Username">
-      <input type="email" name="email" placeholder="Email">
-      <input type="password" name="password" placeholder="Password">
-      <button type="submit">Register</button>
-    </form>
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <% if (errorMessage.length === 0) { %>
+          <div class="alert alert-danger custom-hidden" role="alert">
+            <!-- Content of the alert goes here -->
+          </div>
+        <% } else { %>
+          <% console.log(errorMessage) %>
+          <div class="alert alert-danger" style="text-align: center" role="alert">
+            <%= errorMessage %>
+          </div>
+        <% } %>
+      </div>
+        
+        <h1 class="mb-4">Welcome to Twitter Clone</h1>
+        <!-- Registration Form -->
+        <form action="/users/newuser" method="POST">
+          <div class="form-group">
+            <input type="text" class="form-control" name="username" placeholder="Username">
+          </div>
+          <div class="form-group">
+            <input type="email" class="form-control" name="email" placeholder="Email">
+          </div>
+          <div class="form-group">
+            <input type="password" class="form-control" name="password" placeholder="Password">
+          </div>
+          <button type="submit" class="btn btn-primary">Register</button>
+        </form>
 
-    <!-- Login Form -->
-    <form action="/users/login" method="POST">
-      <input type="text" name="username" placeholder="Username">
-      <input type="password" name="password" placeholder="Password">
-      <button type="submit">Login</button>
-    </form>
-  </ul>
+        <!-- Login Form -->
+        <form action="/users/login" method="POST" class="mt-4">
+          <div class="form-group">
+            <input type="text" class="form-control" name="username" placeholder="Username">
+          </div>
+          <div class="form-group">
+            <input type="password" class="form-control" name="password" placeholder="Password">
+          </div>
+          <button type="submit" class="btn btn-success">Login</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+
 </body>
 </html>
-
-
-
-

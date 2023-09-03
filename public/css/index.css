@@ -1,0 +1,25 @@
+* {
+    background-color: blanchedalmond;
+    font-family:Georgia, 'Times New Roman', Times, serif
+}
+body {
+    background-color: rgb(202, 202, 232);
+}
+.list-group-item {
+    background-color: blanchedalmond;
+}
+.custom-hidden {
+    display: none;
+  }
+  
+  .tweet-text {
+    max-height: 100px; /* Adjust the height as needed */
+    max-width: fit-content; /* Adjust the height as needed */
+
+overflow: hidden; /* Hide overflow content */
+white-space: normal; /* Allow text to wrap */    
+  }
+  
+  
+  
+  

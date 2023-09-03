@@ -26,6 +26,29 @@ exports.createTweet = async (req, res) => {
   }
 };
 
+// Like a tweet
+exports.likeTweet = async (req, res) => {
+  try {
+    const currentUserId = req.session.userId;
+    const tweetId = req.params.tweetId;
+
+    const tweet = await Tweet.findById(tweetId).exec();
+    const isLikedByCurrentUser = tweet.likedBy.includes(currentUserId);
+    tweet.isLikedByCurrentUser = isLikedByCurrentUser;
+    const tweetsOwner = tweet.user;
+    if (!tweet) {
+      return res.status(404).json({ error: "Tweet not found" });
+    }
+    // Use the likeTweet method to add the user's ID to the likedBy array
+    await tweet.likeTweet(currentUserId);
+
+    return res.status(200).redirect(`/users/${tweetsOwner}`);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "error" });
+  }
+};
+
 // Delete a tweet by ID
 exports.deleteTweet = async (req, res) => {
   const tweetId = req.params.tweetId;
@@ -40,37 +63,58 @@ exports.deleteTweet = async (req, res) => {
     return res.status(500).json({ error: "Error deleting tweet" });
   }
 };
+//Unlike a tweet
 
-// Update a tweet by ID
-exports.updateTweet = async (req, res) => {
+exports.unlikeTweet = async (req, res) => {
   const tweetId = req.params.tweetId;
-  const newText = req.body.text;
+  const userId = req.session.userId; // Assuming you have a user's ID in the session
 
   try {
-    const updatedTweet = await Tweet.findByIdAndUpdate(
-      tweetId,
-      { text: newText },
-      { new: true }
-    );
+    const tweet = await Tweet.findById(tweetId).exec();
+    const tweetsOwner = tweet.user;
+    if (!tweet) {
+      return res.status(404).json({ error: "Tweet not found" });
+    }
 
-    return res.status(200).json(updatedTweet);
+    // Use the unlikeTweet method to remove the user's ID from the likedBy array
+    await tweet.unlikeTweet(userId);
+
+    return res.status(200).redirect(`/users/${tweetsOwner}`);
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: "Error updating tweet" });
+    return res.status(500).json({ error: "Error unliking tweet" });
   }
 };
+// Update a tweet by ID
+// exports.updateTweet = async (req, res) => {
+//   const tweetId = req.params.tweetId;
+//   const newText = req.body.text;
+
+//   try {
+//     const updatedTweet = await Tweet.findByIdAndUpdate(
+//       tweetId,
+//       { text: newText },
+//       { new: true }
+//     );
+
+//     return res.status(200).json(updatedTweet);
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json({ error: "Error updating tweet" });
+//   }
+// };
 
 // Retrieve all tweets
-exports.retrieveTweets = async (req, res) => {
-  try {
-    const tweets = await Tweet.find({});
+// exports.retrieveTweets = async (req, res) => {
+//   try {
+//     const tweets = await Tweet.find({});
 
-    return res.status(200).json(tweets);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: "Error retrieving tweets" });
-  }
-};
+//     return res.status(200).json(tweets);
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json({ error: "Error retrieving tweets" });
+//   }
+// };
 // Retrieve tweets of a specific user
 exports.getUserTweets = async (req, res) => {
   const userId = req.params.userId;
@@ -84,3 +128,22 @@ exports.getUserTweets = async (req, res) => {
     return res.status(500).json({ error: "Error retrieving user tweets" });
   }
 };
+
+// // In your controller
+// exports.getTweetDetails = async (req, res) => {
+//   try {
+//     const tweetId = req.params.tweetId;
+//     const currentUserId = req.session.userId;
+
+//     const tweet = await Tweet.findById(tweetId).exec();
+
+//     // Check if the tweet is liked by the current user
+//     const isLikedByCurrentUser = tweet.likedBy.includes(currentUserId);
+
+//     // Render the tweet details with the isLikedByCurrentUser property
+//     res.render("tweet-details", { tweet, isLikedByCurrentUser });
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json({ error: "Error retrieving tweet details" });
+//   }
+// };

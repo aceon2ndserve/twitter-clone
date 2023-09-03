@@ -2,50 +2,81 @@
 <html>
 <head>
   <title>User Profile</title>
-  <a href="/users/logout">Logout</a>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="/css/index.css">
 
+  <a class="btn btn-danger btn-sm" href="/users/logout">Logout</a>
+ 
 </head>
 <body>
-  
-  <h1><%=username%> Profile</h1>
-<h1>Your tweets:</h1>
-<ul>
-  <% tweets.forEach((tweet) => { %>
-    <li><%= tweet.text %></li>
-    <form method="POST" action="/tweets/<%= tweet.id %>?_method=DELETE">
-      <input type="hidden" name="_method" value="DELETE">
-      <button type="submit">Delete Tweet</button>
-    </form>
-  <% }); %>
-</ul>
-<h1> Other users to follow</h1>
-<ul>
-  <% users.forEach((user) => { %>
-    <li>
-      <span><%= user.username %></span>
-      <!-- Check if the current user is following this user -->
-      <% if (followingUserIds.includes(user.id.toString())) { %>
-        <form method="POST" action="/users/unfollow/<%= user.id %>">
-          <button type="submit">Unfollow</button>
-        </form>
-      <% } else { %>
-        <form method="POST" action="/users/follow/<%= user.id %>">
-          <button type="submit">Follow</button>
-        </form>
-      <% } %>
-    </li>
-  <% }); %>
-</ul>
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-6">
+        <h1>Logged in as <%= username %></h1>
+        <h2> <%= user.username %>'s Profile (Followers: Following: ):</h2>
+        
+        <ul class="list-group">
+          <% if (tweets.length === 0) { %>
+            <h4>There are no tweets yet</h4>
+          
+            <% } %>
+          <% tweets.forEach((tweet) => { %>
+            <h3> Tweets </h3>
+            <li class="list-group-item">
+              <div class="tweet-text">
+                <%= tweet.text %>
+              </div>
+              <% if (tweet.isLikedByCurrentUser) { %>
+                <form method="POST" action="/tweets/unlike/<%= tweet.id %>">
+                  <button class="btn btn-secondary btn-sm float-end" type="submit">Unlike</button>
+                </form>
+              <% } else { %>
+                <form method="POST" action="/tweets/like/<%= tweet.id %>">
+                  <button class="btn btn-secondary btn-sm float-end" type="submit">Like</button>
+                </form>
+              <% } %>
+              <% if(user.username === username) { %>
+              <form method="POST" action="/tweets/<%= tweet.id %>?_method=DELETE">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="btn btn-danger btn-sm float-end">Delete Tweet</button>
+              </form>
+             <% } %>
+            </li>
+          <% }); %>
+        </ul>
+        <% if(user.username === username) { %>
 
-<form action="/tweets/newtweet" method="POST">
-  <input name="text" placeholder="New Tweet">
-  <button type="submit">Tweet</button>
-</form>
-  </ul>
-  <form action="/users/follow/64f20bbc5e1e9caca0a8d657" method="POST">
-    <button type="submit">Follow Ornela</button>
-  </form>
-  <form action="/users/unfollow/64f20bbc5e1e9caca0a8d657" method="POST">
-    <button type="submit">Unfollow Ornela</button>
-  </form></body>
+        <form action="/tweets/newtweet" method="POST">
+          <div class="input-group mt-3">
+            <input name="text" class="form-control" placeholder="New Tweet">
+            <button type="submit" class="btn btn-primary">Tweet</button>
+          </div>
+        </form>
+        <% } %>
+
+      </div>
+      <div class="col-md-6">
+        <h2>Other users to follow</h2>
+        <ul class="list-group">
+         <% users.forEach((user) => { %>
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    <a href="/users/<%= user.id %>"><%= user.username %></a>
+    <% if (followingUserIds.includes(user.id.toString())) { %>
+      <form method="POST" action="/users/unfollow/<%= user.id %>">
+        <button type="submit" class="btn btn-danger btn-sm">Unfollow</button>
+      </form>
+    <% } else { %>
+      <form method="POST" action="/users/follow/<%= user.id %>">
+        <button type="submit" class="btn btn-primary btn-sm">Follow</button>
+      </form>
+    <% } %>
+  </li>
+<% }); %>
+          
+        </ul>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+</body>
 </html>
