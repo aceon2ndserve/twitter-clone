@@ -2,6 +2,7 @@ const User = require("../models/user");
 const Tweet = require("../models/tweet");
 const bcrypt = require("bcrypt");
 const passport = require("../authentication/passport");
+const Comment = require("../models/comments");
 // Get user profile by ID
 exports.getUserProfile = async (req, res) => {
   const userId = req.params.userId;
@@ -20,10 +21,13 @@ exports.getUserProfile = async (req, res) => {
     }
 
     // Retrieve the user's tweets
-    const tweets = await Tweet.find({ user: userId }).exec();
+    const tweets = await Tweet.find({ user: userId })
+      .populate("comments")
+      .exec();
     for (const tweet of tweets) {
       tweet.isLikedByCurrentUser = tweet.likedBy.includes(currentUserId);
     }
+
     // Render the user's profile page with the user and tweet data
     return res.render("profile", {
       user,
@@ -31,6 +35,7 @@ exports.getUserProfile = async (req, res) => {
       username,
       users,
       followingUserIds,
+      currentUserId,
     });
   } catch (err) {
     console.error(err);
@@ -38,26 +43,26 @@ exports.getUserProfile = async (req, res) => {
   }
 };
 
-// Edit user profile by ID
-exports.editUserProfile = async (req, res) => {
-  const userId = req.params.userId;
-  const updatedData = req.body;
+// // Edit user profile by ID
+// exports.editUserProfile = async (req, res) => {
+//   const userId = req.params.userId;
+//   const updatedData = req.body;
 
-  try {
-    const updatedUser = await User.findByIdAndUpdate(userId, updatedData, {
-      new: true,
-    }).exec();
+//   try {
+//     const updatedUser = await User.findByIdAndUpdate(userId, updatedData, {
+//       new: true,
+//     }).exec();
 
-    if (!updatedUser) {
-      return res.status(404).json({ error: "User not found" });
-    }
+//     if (!updatedUser) {
+//       return res.status(404).json({ error: "User not found" });
+//     }
 
-    return res.status(200).json(updatedUser);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: "Error updating user profile" });
-  }
-};
+//     return res.status(200).json(updatedUser);
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json({ error: "Error updating user profile" });
+//   }
+// };
 // Create a new user
 exports.createUser = async (req, res) => {
   const { username, email, password } = req.body;

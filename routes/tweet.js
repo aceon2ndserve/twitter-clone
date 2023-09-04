@@ -11,12 +11,8 @@ router.post("/unlike/:tweetId", tweetController.unlikeTweet);
 // Delete a tweet by ID
 router.delete("/:tweetId", tweetController.deleteTweet);
 
-// // Update a tweet by ID
-// router.put("/:tweetId", tweetController.updateTweet);
-
-// // Retrieve all tweets
-// router.get("/alltweets", tweetController.retrieveTweets);
-
+// Creaate a comment
+router.post("/comments/:tweetId", tweetController.createComment);
 // Retrieve User tweets
 router.get("/:userId", tweetController.getUserTweets);
 

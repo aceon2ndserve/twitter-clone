@@ -1,3 +1,4 @@
+const Comment = require("../models/comments");
 const Tweet = require("../models/tweet");
 
 // Create a new tweet
@@ -83,6 +84,32 @@ exports.unlikeTweet = async (req, res) => {
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Error unliking tweet" });
+  }
+};
+exports.createComment = async (req, res) => {
+  const { text } = req.body;
+  const { userId } = req.session;
+  const tweetId = req.params.tweetId;
+
+  try {
+    const newComment = new Comment({
+      text,
+      user: userId,
+      tweet: tweetId,
+    });
+
+    await newComment.save();
+
+    // Update the tweet to include the new comment
+    const tweet = await Tweet.findById(tweetId);
+    const tweetsOwner = tweet.user;
+    tweet.comments.push(newComment._id);
+    await tweet.save();
+
+    return res.status(200).redirect(`/users/${tweetsOwner}`);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Error creating comment" });
   }
 };
 // Update a tweet by ID
