@@ -1,5 +1,5 @@
-const User = require("../models/user");
 const Tweet = require("../models/tweet");
+const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const passport = require("../authentication/passport");
 const Comment = require("../models/comments");
@@ -21,9 +21,28 @@ exports.getUserProfile = async (req, res) => {
     }
 
     // Retrieve the user's tweets
-    const tweets = await Tweet.find({ user: userId })
-      .populate("comments")
-      .exec();
+    const tweets = await Tweet.find({ user: userId }).populate([
+      {
+        path: "retweets.user",
+        model: "User",
+      },
+      {
+        path: "retweets.originalTweet",
+        model: "Tweet",
+      },
+    ]);
+    const retweetedTweets = await Tweet.find({
+      "retweets.user": userId,
+    }).populate([
+      {
+        path: "retweets.originalTweet",
+        model: "Tweet",
+      },
+      {
+        path: "retweets.user",
+        model: "User",
+      },
+    ]);
     for (const tweet of tweets) {
       tweet.isLikedByCurrentUser = tweet.likedBy.includes(currentUserId);
     }
@@ -36,6 +55,7 @@ exports.getUserProfile = async (req, res) => {
       users,
       followingUserIds,
       currentUserId,
+      retweetedTweets,
     });
   } catch (err) {
     console.error(err);
@@ -43,26 +63,6 @@ exports.getUserProfile = async (req, res) => {
   }
 };
 
-// // Edit user profile by ID
-// exports.editUserProfile = async (req, res) => {
-//   const userId = req.params.userId;
-//   const updatedData = req.body;
-
-//   try {
-//     const updatedUser = await User.findByIdAndUpdate(userId, updatedData, {
-//       new: true,
-//     }).exec();
-
-//     if (!updatedUser) {
-//       return res.status(404).json({ error: "User not found" });
-//     }
-
-//     return res.status(200).json(updatedUser);
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({ error: "Error updating user profile" });
-//   }
-// };
 // Create a new user
 exports.createUser = async (req, res) => {
   const { username, email, password } = req.body;
@@ -81,8 +81,11 @@ exports.createUser = async (req, res) => {
 
     // Save the user to the database
     await newUser.save();
+    // Set a flash message
+    req.flash("success", "Signed up successfully! You can now login...");
 
-    res.json({ message: "User registered successfully" });
+    // Redirect to the index page
+    res.redirect("/"); // Adjust the path as needed
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Error creating user" });
@@ -96,17 +99,14 @@ exports.login = async (req, res) => {
 
     // Store the user's ID in the session (assuming you are using express-session)
     req.session.userId = userId;
-    const tweets = await Tweet.find({ user: userId }).exec();
-
-    // Redirect to the user's profile page or some other route
-    res.redirect(`/users/${userId}`);
+    res.redirect("/home");
   } catch (error) {
     // Handle any errors
 
     // Display flash messages (if any)
-    const errorMessage = req.flash("error")[0]; // Get the first error message
+    // const errorMessage = req.flash("error")[0]; // Get the first error message
     console.error(error);
-    res.render("index", { errorMessage });
+    // res.render("index", { errorMessage });
   }
 };
 
@@ -147,7 +147,7 @@ exports.followUser = async (req, res) => {
     await User.findByIdAndUpdate(currentUserId, {
       $addToSet: { following: userIdToFollow },
     });
-    res.redirect(`/users/${currentUserId}`);
+    res.redirect(`back`);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Error following user" });
@@ -170,7 +170,7 @@ exports.unfollowUser = async (req, res) => {
       $pull: { following: userIdToUnfollow },
     });
 
-    res.redirect(`/users/${currentUserId}`);
+    res.redirect(`back`);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Error unfollowing user" });

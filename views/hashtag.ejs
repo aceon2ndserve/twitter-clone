@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hashtag Page</title>
+  <link rel="stylesheet" type="text/css" href="/css/hashtags.css">
+
+</head>
+<body>
+  <header>
+ <!-- Navigation bar and user info -->
+ <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+      <!-- Display user info if logged in -->
+      <% if (userId) { %>
+        <span style="color: white;" class="navbar-text">
+          Logged in as <%= username %>
+        </span>
+        <form class="d-flex" action="/users/logout">
+          <button class="btn btn-outline-danger" type="submit">Logout</button>
+        </form>
+        <a class="btn btn-primary btn-sm ms-2" style="color : white" href="/users/<%= userId %>">Go to your profile</a>
+        <a class="btn btn-primary btn-sm" style="color : white" href="/home">Home</a>
+
+      <% } %>
+    </div>
+  </nav>  </header>
+  
+  <!-- Main content area -->
+  <main>
+    <h1>Tweets with Hashtag: <%= hashtag %></h1>
+    <% if (tweets.length === 0) { %>
+      <p>No tweets found with this hashtag.</p>
+    <% } else { %>
+      <ul>
+        <% tweets.forEach((tweet) => { %>
+          <li>
+            <p><h1>From: <%= tweet.user.username %></h1></p>
+            <p><%= tweet.text %></p>
+          </li>
+        <% }); %>
+      </ul>
+    <% } %>
+  </main>
+  
+  <!-- Footer -->
+  <footer>
+    <!-- Add your footer content here -->
+  </footer>
+</body>
+</html>

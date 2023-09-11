@@ -1,0 +1,95 @@
+/* Profile page styles */
+* {
+    background-color: #292b2c;
+    color: #ffffff;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+  }
+  
+  body {
+    background-color: #292b2c;
+  }
+  
+  /* Profile card styles */
+  .card {
+    margin-top: 20px;
+    background-color: #333;
+    color: #ffffff;
+    border: none;
+  }
+  
+  /* Profile card text styles */
+  .card-text {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #ffffff;
+  }
+  
+  /* Tweet styles */
+  .list-group-item {
+    padding: 10px;
+    background-color: #333;
+    color: #ffffff;
+    border-radius: 5px; /* Apply border radius to all items */
+  }
+  
+  /* Tweet input styles */
+  .input-group {
+    margin-top: 20px;
+  }
+  
+  /* Tweet button styles */
+  .btn-primary {
+    margin-top: 10px;
+  }
+  
+  /* Retweeted styles */
+  .mb-1.text-muted {
+    font-size: 23px;
+    color: #f6f6f6 !important;
+    margin-bottom: 5px;
+  }
+  
+  /* Original tweet text styles */
+  .tweet-text {
+    margin-top: 5px;
+  }
+  
+  /* New tweet input styles */
+  .form-control[name="text"] {
+    margin-top: 15px;
+    height: 30px;
+  }
+  
+  /* User list styles */
+  .list-group-item.d-flex.justify-content-between.align-items-center {
+    margin-bottom: 10px;
+    background-color: #292b2c;
+    color: #ffffff;
+    border: none;
+  }
+  
+  /* Follow/Unfollow button styles */
+  .btn-sm {
+    margin-left: 10px;
+  }
+  
+  /* Navbar styles */
+  .navbar {
+    background-color: #1d1d1d;
+    color: #ffffff;
+  }
+  
+  /* Navbar text styles */
+  .navbar-text {
+    color: #ffffff;
+  }
+  .retweet-box {
+    margin-top: 25px;
+        background-color: #292b2c;
+        border-radius: 5px; /* Apply border radius to all items */
+      }
+  
+  .retweet-text {
+    margin-top: 15px;
+    background-color: #292b2c;
+  }

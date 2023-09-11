@@ -1,3 +1,4 @@
+const User = require("../models/user");
 const Comment = require("../models/comments");
 const Tweet = require("../models/tweet");
 
@@ -8,19 +9,20 @@ exports.createTweet = async (req, res) => {
   }
 
   const { text } = req.body;
-
+  const hashtags = text.match(/#\w+/g);
   const { userId } = req.session;
   console.log(userId);
   try {
     const newTweet = new Tweet({
       text,
       user: userId,
+      hashtags: hashtags || [],
     });
 
     // Save the tweet to the database
     const savedTweet = await newTweet.save();
 
-    return res.redirect(`/users/${userId}`);
+    return res.redirect(`back`);
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Error creating tweet" });
@@ -43,10 +45,86 @@ exports.likeTweet = async (req, res) => {
     // Use the likeTweet method to add the user's ID to the likedBy array
     await tweet.likeTweet(currentUserId);
 
-    return res.status(200).redirect(`/users/${tweetsOwner}`);
+    return res.status(200).redirect(`back`);
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "error" });
+  }
+};
+
+//repost a tweet
+
+exports.retweetTweet = async (req, res) => {
+  try {
+    const currentUserId = req.session.userId;
+    const tweetId = req.params.tweetId;
+
+    // Find the tweet to be retweeted
+    const tweet = await Tweet.findById(tweetId).exec();
+
+    if (!tweet) {
+      return res.status(404).json({ error: "Tweet not found" });
+    }
+
+    // Check if the user has already retweeted this tweet
+    if (tweet.retweets.includes(currentUserId)) {
+      return res
+        .status(400)
+        .json({ error: "You've already retweeted this tweet" });
+    }
+    const newRetweet = {
+      user: currentUserId, // The user who retweeted
+      originalTweet: tweetId, // The ID of the original tweet being retweeted
+    };
+    // Add the user's ID to the retweets array
+    tweet.retweets.push(newRetweet);
+
+    // Save the updated tweet
+    await tweet.save();
+
+    return res.status(200).redirect("back");
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Error retweeting tweet" });
+  }
+};
+
+//Unretweet
+exports.unretweetTweet = async (req, res) => {
+  try {
+    const currentUserId = req.session.userId;
+    const tweetId = req.params.tweetId;
+
+    // Find the tweet to be unretweeted
+    const tweet = await Tweet.findById(tweetId).exec();
+
+    if (!tweet) {
+      return res.status(404).json({ error: "Tweet not found" });
+    }
+
+    // Check if the user has retweeted this tweet
+    const retweet = tweet.retweets.find(
+      (rt) => rt && rt.user && rt.user.toString() === currentUserId
+    );
+
+    if (!retweet) {
+      return res
+        .status(400)
+        .json({ error: "You have not retweeted this tweet" });
+    }
+
+    // Remove the retweet from the tweet's retweets array
+    tweet.retweets = tweet.retweets.filter(
+      (rt) => rt && rt.user && rt.user.toString() !== currentUserId
+    );
+
+    // Save the updated tweet
+    await tweet.save();
+
+    return res.status(200).redirect("back");
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Error unretweeting tweet" });
   }
 };
 
@@ -58,7 +136,7 @@ exports.deleteTweet = async (req, res) => {
   try {
     await Tweet.findByIdAndDelete(tweetId);
 
-    return res.redirect(`/users/${userId}`);
+    return res.redirect(`back`);
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Error deleting tweet" });
@@ -80,7 +158,7 @@ exports.unlikeTweet = async (req, res) => {
     // Use the unlikeTweet method to remove the user's ID from the likedBy array
     await tweet.unlikeTweet(userId);
 
-    return res.status(200).redirect(`/users/${tweetsOwner}`);
+    return res.status(200).redirect(`back`);
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Error unliking tweet" });
@@ -106,42 +184,12 @@ exports.createComment = async (req, res) => {
     tweet.comments.push(newComment._id);
     await tweet.save();
 
-    return res.status(200).redirect(`/users/${tweetsOwner}`);
+    return res.status(200).redirect(`back`);
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Error creating comment" });
   }
 };
-// Update a tweet by ID
-// exports.updateTweet = async (req, res) => {
-//   const tweetId = req.params.tweetId;
-//   const newText = req.body.text;
-
-//   try {
-//     const updatedTweet = await Tweet.findByIdAndUpdate(
-//       tweetId,
-//       { text: newText },
-//       { new: true }
-//     );
-
-//     return res.status(200).json(updatedTweet);
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({ error: "Error updating tweet" });
-//   }
-// };
-
-// Retrieve all tweets
-// exports.retrieveTweets = async (req, res) => {
-//   try {
-//     const tweets = await Tweet.find({});
-
-//     return res.status(200).json(tweets);
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({ error: "Error retrieving tweets" });
-//   }
-// };
 // Retrieve tweets of a specific user
 exports.getUserTweets = async (req, res) => {
   const userId = req.params.userId;
@@ -155,22 +203,3 @@ exports.getUserTweets = async (req, res) => {
     return res.status(500).json({ error: "Error retrieving user tweets" });
   }
 };
-
-// // In your controller
-// exports.getTweetDetails = async (req, res) => {
-//   try {
-//     const tweetId = req.params.tweetId;
-//     const currentUserId = req.session.userId;
-
-//     const tweet = await Tweet.findById(tweetId).exec();
-
-//     // Check if the tweet is liked by the current user
-//     const isLikedByCurrentUser = tweet.likedBy.includes(currentUserId);
-
-//     // Render the tweet details with the isLikedByCurrentUser property
-//     res.render("tweet-details", { tweet, isLikedByCurrentUser });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({ error: "Error retrieving tweet details" });
-//   }
-// };

@@ -1,25 +1,86 @@
 * {
-    background-color: blanchedalmond;
-    font-family:Georgia, 'Times New Roman', Times, serif
+  background-color: #292b2c;
+  color: #ffffff;
+  font-family: Georgia, 'Times New Roman', Times, serif;
 }
-body {
-    background-color: rgb(202, 202, 232);
-}
-.list-group-item {
-    background-color: blanchedalmond;
-}
-.custom-hidden {
-    display: none;
-  }
-  
-  .tweet-text {
-    max-height: 100px; /* Adjust the height as needed */
-    max-width: fit-content; /* Adjust the height as needed */
 
-overflow: hidden; /* Hide overflow content */
-white-space: normal; /* Allow text to wrap */    
-  }
-  
-  
-  
-  
+body {
+  background-color: #292b2c !important; /* Set the background color for the body */
+}
+
+.container {
+  max-width: 600px;
+}
+
+/* Tweet box styles */
+.tweet-box {
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #0000; /* You can set the background color for tweet boxes here */
+}
+
+/* Tweet author styles */
+.card-text {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+/* Tweet content styles */
+.card-body {
+  margin-bottom: 10px;
+}
+
+/* Comment styles */
+.list-group-item {
+  padding: 5px;
+  border: none;
+  background-color: #333333;
+  color: #ffffff;
+}
+
+/* Comment input styles */
+.input-group {
+  margin-top: 10px;
+}
+
+/* Like and Retweet button styles */
+.btn-secondary.btn-sm {
+  margin-right: 10px;
+}
+
+/* Delete button styles */
+.btn-danger.btn-sm {
+  margin-right: 10px;
+}
+
+/* Follow/Unfollow button styles */
+.btn-secondary.btn-sm {
+  margin-right: 10px;
+  width: 100%;
+}
+
+/* Profile link styles */
+.btn-primary.btn-sm {
+  margin-right: 10px;
+}
+
+/* Navbar styles */
+.navbar {
+  margin-bottom: 20px;
+}
+
+/* Logout button styles */
+.btn-outline-danger {
+  margin-left: auto;
+}
+
+.float-end {
+  background-color: #292b2c;
+}
+
+
+
+ .text-muted {
+  background-color: #292b2c !important
+}

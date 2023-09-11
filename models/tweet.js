@@ -1,3 +1,4 @@
+const User = require("./user");
 const mongoose = require("mongoose");
 
 const tweetSchema = new mongoose.Schema({
@@ -22,6 +23,19 @@ const tweetSchema = new mongoose.Schema({
       ref: "Comment",
     },
   ],
+  retweets: [
+    {
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+      originalTweet: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Tweet",
+      },
+    },
+  ],
+  hashtags: [{ type: String }],
 });
 
 tweetSchema.methods.likeTweet = function (userId) {
@@ -39,6 +53,12 @@ tweetSchema.methods.unlikeTweet = function (userId) {
   }
   return Promise.resolve(this);
 };
+
+// // In the Tweet model file
+// tweetSchema.statics.findTweetsWithUsernames = function () {
+//   return this.find({}).populate("TwitterUsers", "username");
+// };
+
 const Tweet = mongoose.model("Tweet", tweetSchema);
 
 module.exports = Tweet;

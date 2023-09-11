@@ -33,6 +33,10 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 db.once("open", () => {
   console.log("Connected to MongoDB");
 });
+// Import your models after setting up the database connection
+const User = require("./models/user");
+const Tweet = require("./models/tweet");
+const Comment = require("./models/comments");
 app.use(express.static("public"));
 
 app.use(express.urlencoded({ extended: true }));

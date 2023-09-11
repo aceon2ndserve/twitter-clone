@@ -9,14 +9,15 @@
   <div class="container mt-5">
     <div class="row justify-content-center">
       <div class="col-md-6">
-        <% if (errorMessage.length === 0) { %>
-          <div class="alert alert-danger custom-hidden" role="alert">
-            <!-- Content of the alert goes here -->
-          </div>
-        <% } else { %>
-          <% console.log(errorMessage) %>
+        <% if (errorMessage.length > 0) { %>
+         
           <div class="alert alert-danger" style="text-align: center" role="alert">
             <%= errorMessage %>
+          </div>
+        <% } %>
+        <% if (messages.length > 0) { %>
+       <div class="alert alert-success"style="text-align: center">
+            <%= messages %>
           </div>
         <% } %>
       </div>

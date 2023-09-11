@@ -6,6 +6,10 @@ const userSchema = new mongoose.Schema({
   password: String,
   followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  tweet: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Tweet",
+  },
 });
 
 userSchema.methods.comparePassword = async function (candidatePassword) {
@@ -15,6 +19,6 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
     throw err;
   }
 };
-const User = mongoose.model("TweeterUsers", userSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;

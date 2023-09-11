@@ -1,3 +1,4 @@
+const User = require("./user");
 const mongoose = require("mongoose");
 
 const commentSchema = new mongoose.Schema({

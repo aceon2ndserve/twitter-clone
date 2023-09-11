@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const userController = require("../controllers/userController");
-
+const ensureAuthenticated = require("../middlewares/middlewares");
 router.get("/logout", ensureAuthenticated, userController.logout);
 router.get("/:userId", ensureAuthenticated, userController.getUserProfile);
 // router.post("/:userId/edit", userController.editUserProfile);
@@ -19,12 +19,5 @@ router.post(
 );
 router.post("/follow/:userId", userController.followUser);
 router.post("/unfollow/:userId", userController.unfollowUser);
-
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.redirect("/");
-}
 
 module.exports = router;
