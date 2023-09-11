@@ -92,7 +92,7 @@
           <% retweetedTweets.forEach((retweet) => { %>
             <div class="retweet-box">
               <% if (retweet.retweets && retweet.retweets.length > 0 && retweet.retweets[0].user) { %>
-                <p class="mb-1 text-muted">Retweeted from: <%= retweet.retweets[0].user.username %></p>
+                <p class="mb-1 text-muted">Retweeted from: <%= retweet.user.username %></p>
               <% } else { %>
               <% return } %>
               <div class="retweet-text">

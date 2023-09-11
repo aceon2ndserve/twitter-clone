@@ -17,7 +17,7 @@ body {
   margin-bottom: 20px;
   padding: 10px;
   border-radius: 5px;
-  background-color: #0000; /* You can set the background color for tweet boxes here */
+  background-color: #0000 /* You can set the background color for tweet boxes here */
 }
 
 /* Tweet author styles */
@@ -38,10 +38,12 @@ body {
   background-color: #333333;
   color: #ffffff;
 }
-
+.card {
+  background-color: #292b2c !important;
+}
 /* Comment input styles */
 .input-group {
-  margin-top: 10px;
+  margin-top: 10px
 }
 
 /* Like and Retweet button styles */
@@ -83,4 +85,10 @@ body {
 
  .text-muted {
   background-color: #292b2c !important
+}
+.form-control {
+  max-width:250px
+}
+::placeholder {
+  text-align: center;
 }

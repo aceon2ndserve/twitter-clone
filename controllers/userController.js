@@ -42,7 +42,12 @@ exports.getUserProfile = async (req, res) => {
         path: "retweets.user",
         model: "User",
       },
+      {
+        path: "user",
+        model: "User",
+      },
     ]);
+    console.log(retweetedTweets);
     for (const tweet of tweets) {
       tweet.isLikedByCurrentUser = tweet.likedBy.includes(currentUserId);
     }
